@@ -1,6 +1,6 @@
 # qarin_mvvm
 
-A new Flutter project.
+A conflict Mapping App
 
 ## Getting Started
 

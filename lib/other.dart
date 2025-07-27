@@ -200,7 +200,7 @@
 
 // void insertsomething(var s) async {
 //   var db = await Db.create(
-//     'mongodb+srv://zexowil:XxjSR9ndk6ZQpiwr@qarin.vn3wglp.mongodb.net/doodle?retryWrites=true&w=majority&authSource=admin',
+//     '',
 //   );
 //   await db.open();
 
