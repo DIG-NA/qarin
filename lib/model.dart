@@ -10,6 +10,8 @@ void writeData(Map<String, dynamic> data) async {
         (DocumentReference doc) =>
             print('DocumentSnapshot added with ID: ${doc.id}'),
       );
+
+  readData();
 }
 
 Future<QuerySnapshot<Map<String, dynamic>>> readData() async {

@@ -26,6 +26,7 @@ void main() async {
       providers: [
         ChangeNotifierProvider(create: (_) => MapViewModel()),
         ChangeNotifierProvider(create: (_) => FieldViewModel()),
+        ChangeNotifierProvider(create: (_) => MarkerkayerViewModel()),
       ],
 
       child: App(),
@@ -33,9 +34,7 @@ void main() async {
   );
 }
 
-// void main(List<String> args) {
-//   runApp(App());
-// }
+// class theme {}
 
 class App extends StatelessWidget {
   const App({super.key});
@@ -44,6 +43,21 @@ class App extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(body: WholeMap()),
+      theme: ThemeData(
+        cardColor: Colors.white,
+        cardTheme: CardTheme(
+          shape: BeveledRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(5)),
+            side: BorderSide(
+              width: 1.8,
+              color:
+                  context.watch<FieldViewModel>().side == 'rsf'
+                      ? Colors.yellow
+                      : Colors.green,
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

@@ -62,14 +62,14 @@ class Field extends StatelessWidget {
               "description": v.description,
             };
             return Material(
-              shape: BeveledRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(6)),
-                side: BorderSide(
-                  width: 2,
-                  color: v.side == 'rsf' ? Colors.yellow : Colors.green,
-                ),
-              ),
-
+              shape: Theme.of(context).cardTheme.shape,
+              // BeveledRectangleBorder(
+              //   borderRadius: BorderRadius.all(Radius.circular(6)),
+              //   side: BorderSide(
+              //     width: 2,
+              //     color: v.side == 'rsf' ? Colors.yellow : Colors.green,
+              //   ),
+              // ),
               child: Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: Column(
@@ -120,12 +120,12 @@ class Field extends StatelessWidget {
                       decoration: InputDecoration(labelText: 'description'),
                     ),
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Padding(
                           padding: const EdgeInsets.symmetric(vertical: 6),
                           child: Switch(
-                            // padding: EdgeInsets.symmetric(vertical: 6),
                             value: v.side == 'saf',
                             onChanged: (value) {
                               v.side == Side.saf.name
@@ -142,10 +142,6 @@ class Field extends StatelessWidget {
                               icon: Icon(Icons.upload),
                             );
                           },
-                        ),
-                        IconButton(
-                          onPressed: () => readData(),
-                          icon: Icon(Icons.book),
                         ),
                       ],
                     ),

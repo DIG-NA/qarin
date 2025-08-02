@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart' show QuerySnapshot;
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -71,14 +70,6 @@ class MarkerKayer extends StatefulWidget {
 }
 
 class _MarkerKayerState extends State<MarkerKayer> {
-  late Future<QuerySnapshot<Map<String, dynamic>>> data;
-
-  @override
-  void initState() {
-    data = readData();
-    super.initState();
-  }
-
   //  Map<String, dynamic> t = {
   //               "id": "${v.id}",
   //               "timestamp": v.time,
@@ -89,31 +80,79 @@ class _MarkerKayerState extends State<MarkerKayer> {
   //               "description": v.description,
   //             };
 
+  // void changehasStarted() {
+  //   setState(() {
+  //     _hasStarted = !_hasStarted;
+  //   });
+  // }
+
+  @override
+  void initState() {
+    super.initState();
+    // loadIntoAllMarkers();
+    Provider.of<MarkerkayerViewModel>(context).loadIntoAllMarkers();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: readData(),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          return MarkerLayer(
+    return Consumer<MarkerkayerViewModel>(
+      builder:
+          (context, value, child) => MarkerLayer(
+            key: ValueKey(value._visibleMarkers.length),
             markers:
-                snapshot.data!.docs.map((e) {
-                  return Marker(
-                    point: LatLng(e['location']['lat'], e['location']['lng']),
-                    child: Icon(
-                      Icons.circle,
-                      color: Colors.black,
-                      //  Color(int.parse(e['icon']['color'])),
-                      size: 9,
-                    ),
-                  );
-                }).toList(),
-          );
-        } else {
-          return LinearProgressIndicator();
-        }
-      },
+                value._hasStarted
+                    ? value._visibleMarkers
+                    : context.watch<MarkerkayerViewModel>()._allMarkers,
+          ),
     );
+  }
+}
+
+class MarkerkayerViewModel extends ChangeNotifier {
+  List<Marker> _allMarkers = [];
+  List<Marker> _visibleMarkers = [];
+  bool _hasStarted = false;
+
+  Future<void> loadIntoAllMarkers() async {
+    final snapshot = await readData();
+
+    _allMarkers =
+        snapshot.docs.map((e) {
+          return Marker(
+            height: 12,
+            width: 12,
+            point: LatLng(e['location']['lat'], e['location']['lng']),
+            child: Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(color: Colors.black, width: .5),
+                color: Colors.transparent,
+              ),
+              child: Icon(
+                Icons.circle,
+                color: e['side'] == 'saf' ? Colors.green : Colors.yellow,
+                size: 9,
+              ),
+            ),
+          );
+        }).toList();
+    notifyListeners();
+  }
+
+  void playMarkersIncrementally() async {
+    _hasStarted = !_hasStarted;
+
+    notifyListeners();
+    for (final marker in _allMarkers) {
+      await Future.delayed(Duration(milliseconds: 600));
+
+      _visibleMarkers = [..._visibleMarkers, marker];
+      notifyListeners();
+    }
+    _visibleMarkers = [];
+    _hasStarted = !_hasStarted;
+
+    notifyListeners();
   }
 }
 
@@ -140,6 +179,10 @@ class _ResizingButtonsState extends State<ResizingButtons> {
         context.read<FieldViewModel>().invertfieldvisibility,
         Icons.visibility,
       ),
+      ActionItem(
+        Provider.of<MarkerkayerViewModel>(context).playMarkersIncrementally,
+        Icons.play_arrow_rounded,
+      ),
     ];
   }
 
@@ -148,17 +191,18 @@ class _ResizingButtonsState extends State<ResizingButtons> {
     return Positioned(
       bottom: 5,
       right: 5,
-      child: Column(
-        children:
-            widgets.map((e) {
-              return Container(
-                color: Colors.white,
-                child: IconButton(
+      child: Card(
+        color: Theme.of(context).cardColor,
+        shape: Theme.of(context).cardTheme.shape,
+        child: Column(
+          children:
+              widgets.map((e) {
+                return IconButton(
                   onPressed: e.onpressed,
                   icon: Icon(e.iconData),
-                ),
-              );
-            }).toList(),
+                );
+              }).toList(),
+        ),
       ),
     );
   }
