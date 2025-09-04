@@ -34,8 +34,6 @@ void main() async {
   );
 }
 
-// class theme {}
-
 class App extends StatelessWidget {
   const App({super.key});
   @override
@@ -45,7 +43,7 @@ class App extends StatelessWidget {
       home: Scaffold(body: WholeMap()),
       theme: ThemeData(
         cardColor: Colors.white,
-        cardTheme: CardTheme(
+        cardTheme: CardThemeData(
           shape: BeveledRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(5)),
             side: BorderSide(

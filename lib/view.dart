@@ -173,16 +173,16 @@ class ResizingButtons extends StatefulWidget {
 class _ResizingButtonsState extends State<ResizingButtons> {
   List<ActionItem> get widgets {
     return [
-      ActionItem(context.read<MapViewModel>().inZoom, Icons.plus_one),
-      ActionItem(context.read<MapViewModel>().deZoom, Icons.exposure_minus_1),
-      ActionItem(
-        context.read<FieldViewModel>().invertfieldvisibility,
-        Icons.visibility,
-      ),
       ActionItem(
         Provider.of<MarkerkayerViewModel>(context).playMarkersIncrementally,
         Icons.play_arrow_rounded,
       ),
+      ActionItem(
+        context.read<FieldViewModel>().invertfieldvisibility,
+        Icons.visibility,
+      ),
+      ActionItem(context.read<MapViewModel>().inZoom, Icons.plus_one),
+      ActionItem(context.read<MapViewModel>().deZoom, Icons.exposure_minus_1),
     ];
   }
 
