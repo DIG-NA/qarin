@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:qarin_mvvm/model.dart';
@@ -80,16 +82,34 @@ class Field extends StatelessWidget {
                         onEditingComplete:
                             () => FocusScope.of(context).nextFocus(),
                       ),
-                      TextFormField(
-                        onChanged: (value) {
-                          v.time = value;
-                          v.notify();
-                        },
-                        decoration: InputDecoration(labelText: 'time'),
-                        onEditingComplete:
-                            () => FocusScope.of(context).nextFocus(),
-                      ),
 
+                      // TextFormField(
+                      //   onChanged: (value) {
+                      //     v.time = value;
+                      //     v.notify();
+                      //   },
+                      //   decoration: InputDecoration(labelText: 'time'),
+                      //   onEditingComplete:
+                      //       () => FocusScope.of(context).nextFocus(),
+                      // ),
+
+                      //chatgpt
+                      TextFormField(
+                        readOnly: true,
+                        decoration: const InputDecoration(labelText: 'Time'),
+                        controller: TextEditingController(text: '${v.time}'),
+                        onTap: () async {
+                          final picked = await showDatePicker(
+                            context: context,
+                            firstDate: DateTime(2020),
+                            lastDate: DateTime(2030),
+                          );
+                          if (picked != null) {
+                            v.time = picked;
+                            v.notify();
+                          }
+                        },
+                      ),
                       TextFormField(
                         onChanged: (value) {
                           v.url = value;
@@ -161,7 +181,7 @@ enum Side { saf, rsf }
 
 class FieldViewModel extends ChangeNotifier {
   int id = 0;
-  String time = '';
+  DateTime? time;
   double lat = 0;
   double lng = 0;
   String side = Side.saf.name;

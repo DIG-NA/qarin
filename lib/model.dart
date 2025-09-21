@@ -4,7 +4,8 @@ void writeData(Map<String, dynamic> data) async {
   FirebaseFirestore db = FirebaseFirestore.instance;
 
   db
-      .collection('places')
+      // .collection('places')
+      .collection('places-demo')
       .add(data)
       .then(
         (DocumentReference doc) =>
@@ -23,7 +24,12 @@ Future<QuerySnapshot<Map<String, dynamic>>> readData() async {
   //   }
   // });
 
-  var snapshot = await db.collection('places').get();
+  // var snapshot = await db.collection('places').get();
+  var snapshot =
+      await db
+          .collection('places-demo')
+          .orderBy("timestamp", descending: false)
+          .get();
 
   return snapshot;
 }

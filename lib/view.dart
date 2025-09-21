@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -116,25 +117,122 @@ class MarkerkayerViewModel extends ChangeNotifier {
   Future<void> loadIntoAllMarkers() async {
     final snapshot = await readData();
 
+    //using a stack is propebly the safest option as not to offest the marker from it's supposed location
+    // Ai and scraping off of twitter
+
     _allMarkers =
         snapshot.docs.map((e) {
+          print(e.data().entries.first);
+
+          // just marker
+          // return Marker(
+          //   point: LatLng(e['location']['lat'], e['location']['lng']),
+          //   height: 12,
+          //   width: 12,
+          //   child: Container(
+          //     decoration: BoxDecoration(
+          //       shape: BoxShape.circle,
+          //       border: Border.all(color: Colors.black, width: .5),
+          //       color: Colors.transparent,
+          //     ),
+          //     child: Icon(
+          //       Icons.circle,
+          //       color: e['side'] == 'saf' ? Colors.green : Colors.yellow,
+          //       size: 9,
+          //     ),
+          //   ),
+          // );
+
+          // stack
           return Marker(
+            point: LatLng(e['location']['lat'], e['location']['lng']),
             height: 12,
             width: 12,
-            point: LatLng(e['location']['lat'], e['location']['lng']),
-            child: Container(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(color: Colors.black, width: .5),
-                color: Colors.transparent,
-              ),
-              child: Icon(
-                Icons.circle,
-                color: e['side'] == 'saf' ? Colors.green : Colors.yellow,
-                size: 9,
-              ),
+            alignment: Alignment.center,
+            child: Stack(
+              clipBehavior: Clip.none,
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.black, width: .5),
+                    color: Colors.transparent,
+                  ),
+                  child: Icon(
+                    Icons.circle,
+                    color: e['side'] == 'saf' ? Colors.green : Colors.yellow,
+                    size: 9,
+                  ),
+                ),
+                Positioned(
+                  right: 10,
+                  bottom: 10,
+                  child: Card(
+                    shape: BeveledRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(5)),
+                      side: BorderSide(
+                        width: 1.8,
+                        color:
+                            e['side'] == 'saf' ? Colors.green : Colors.yellow,
+                      ),
+                    ),
+                    child: Builder(
+                      builder: (context) {
+                        Timestamp ts = e['timestamp'] as Timestamp;
+                        DateTime dt = ts.toDate();
+
+                        return Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Center(
+                            child: Text(
+                              "${dt.year}-${dt.month}-${dt.day} \n ${e['url']} \n ${e['description']}",
+
+                              // "${e['id']}  \n ${e['type']} \n ${e['url']}  \n ${e['timestamp']} \n ${e['description']}",
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ],
             ),
           );
+
+          // row and alignment
+          // return Marker(
+          //   alignment: Alignment.centerRight,
+          //   height: 68,
+          //   width: 50,
+          //   point: LatLng(e['location']['lat'], e['location']['lng']),
+          //   child: Row(
+          //     mainAxisSize: MainAxisSize.min,
+          //     children: [
+          //       Card(
+          //         child: SizedBox(
+          //           height: 50,
+          //           width: 50,
+          //           child: Text(
+          //             "${e['timestamp']}",
+          //             // "${e['id']}  \n ${e['type']} \n ${e['url']}  \n ${e['timestamp']} \n ${e['description']}",
+          //           ),
+          //         ),
+          //       ),
+          //       Container(
+          //         decoration: BoxDecoration(
+          //           shape: BoxShape.circle,
+          //           border: Border.all(color: Colors.black, width: .5),
+          //           color: Colors.transparent,
+          //         ),
+          //         child: Icon(
+          //           Icons.circle,
+          //           color: e['side'] == 'saf' ? Colors.green : Colors.yellow,
+          //           size: 9,
+          //         ),
+          //       ),
+          //     ],
+          //   ),
+          // );
         }).toList();
     notifyListeners();
   }
