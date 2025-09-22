@@ -80,7 +80,7 @@ class Field extends StatelessWidget {
                         onEditingComplete:
                             () => FocusScope.of(context).nextFocus(),
                       ),
-
+                      // will probly use this or a different implemntaion for the time thing
                       // TextFormField(
                       //   onChanged: (value) {
                       //     v.time = value;
@@ -158,10 +158,6 @@ class Field extends StatelessWidget {
                           ),
                         ],
                       ),
-                      // SingleChildScrollView(
-                      //   scrollDirection: Axis.horizontal,
-                      //   child: Text("""$t"""),
-                      // ),
                     ],
                   ),
                 ),

@@ -7,17 +7,6 @@ import 'package:qarin_mvvm/fieldview.dart';
 import 'viewmodel.dart';
 import 'view.dart';
 
-//MVVM
-
-//Model
-//  API & Database
-
-//ViewModel
-//  State & manipulated data
-
-//View
-//  Ui
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
