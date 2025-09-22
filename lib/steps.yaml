@@ -10,3 +10,5 @@ make it into a website
 and put the key in another website (encrypted or otherwise) then retrive the key to read the database
 or acess the db for an external api that's hosted in another service 
 
+change the homeview :
+make it a row of one mapview and a coulmn that contains a control field and an optional location-adding-field
