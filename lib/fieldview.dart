@@ -257,7 +257,10 @@ class Field extends StatelessWidget {
                 children: [
                   Expanded(
                     child: Card(
-                      color: Colors.black,
+                      color:
+                          context.watch<FieldViewModel>().side == "saf"
+                              ? Colors.green
+                              : Colors.yellow,
                       shape: BeveledRectangleBorder(
                         borderRadius: BorderRadius.circular(1),
                       ),
