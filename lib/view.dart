@@ -35,20 +35,52 @@ class _WholeMapState extends State<WholeMap> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
+    return Row(
       children: [
-        FlutterMap(
-          mapController: Provider.of<MapViewModel>(context).con,
-          options: mapoptions(),
-          children: [MapLayer(), MarkerKayer()],
+        Expanded(
+          flex: 10,
+          child: FlutterMap(
+            mapController: Provider.of<MapViewModel>(context).con,
+            options: mapoptions(),
+            children: [MapLayer(), MarkerKayer()],
+          ),
         ),
-        ResizingButtons(),
-        Visibility(
-          visible: context.watch<FieldViewModel>().fieldVisiblity,
-          child: FlowView(),
+        Expanded(
+          flex: 2,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: Column(
+              children: [
+                Expanded(
+                  flex: 12,
+                  child: Visibility(
+                    visible: context.watch<FieldViewModel>().fieldVisiblity,
+                    child: Field(),
+                  ),
+                ),
+                Expanded(flex: 1, child: ResizingButtons()),
+              ],
+            ),
+          ),
         ),
       ],
     );
+
+    // original implementation
+    // return Stack(
+    //   children: [
+    //     FlutterMap(
+    //       mapController: Provider.of<MapViewModel>(context).con,
+    //       options: mapoptions(),
+    //       children: [MapLayer(), MarkerKayer()],
+    //     ),
+    //     ResizingButtons(),
+    //     Visibility(
+    //       visible: context.watch<FieldViewModel>().fieldVisiblity,
+    //       child: FlowView(),
+    //     ),
+    //   ],
+    // );
   }
 }
 
@@ -74,7 +106,10 @@ class _MarkerKayerState extends State<MarkerKayer> {
   @override
   void initState() {
     super.initState();
-    Provider.of<MarkerkayerViewModel>(context).loadIntoAllMarkers();
+    Provider.of<MarkerkayerViewModel>(
+      context,
+      listen: false,
+    ).loadIntoAllMarkers();
   }
 
   @override
@@ -100,6 +135,7 @@ class MarkerkayerViewModel extends ChangeNotifier {
   Future<void> loadIntoAllMarkers() async {
     final snapshot = await readData();
 
+    int n = 0;
     _allMarkers =
         snapshot.docs.map((e) {
           // stack
@@ -127,31 +163,52 @@ class MarkerkayerViewModel extends ChangeNotifier {
                 Positioned(
                   right: 10,
                   bottom: 10,
-                  child: Card(
-                    shape: BeveledRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(5)),
-                      side: BorderSide(
-                        width: 1.8,
-                        color:
-                            e['side'] == 'saf' ? Colors.green : Colors.yellow,
-                      ),
-                    ),
-                    child: Builder(
-                      builder: (context) {
-                        Timestamp ts = e['timestamp'] as Timestamp;
-                        DateTime dt = ts.toDate();
-
-                        return Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Center(
-                            child: Text(
-                              "${dt.year}-${dt.month}-${dt.day} \n ${e['url']} \n ${e['description']}",
-                              // "${e['id']}  \n ${e['type']} \n ${e['url']}  \n ${e['timestamp']} \n ${e['description']}",
-                            ),
+                  child: Row(
+                    children: [
+                      Card(
+                        shape: BeveledRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(5)),
+                          side: BorderSide(
+                            width: 1.8,
+                            color:
+                                e['side'] == 'saf'
+                                    ? Colors.green
+                                    : Colors.yellow,
                           ),
-                        );
-                      },
-                    ),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text('${n++}'),
+                        ),
+                      ),
+                      Card(
+                        shape: BeveledRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(5)),
+                          side: BorderSide(
+                            width: 1.8,
+                            color:
+                                e['side'] == 'saf'
+                                    ? Colors.green
+                                    : Colors.yellow,
+                          ),
+                        ),
+                        child: Builder(
+                          builder: (context) {
+                            Timestamp ts = e['timestamp'] as Timestamp;
+                            DateTime dt = ts.toDate();
+                            return Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Center(
+                                child: Text(
+                                  "${dt.year}-${dt.month}-${dt.day} ",
+                                  // "${e['id']}  \n ${e['type']} \n ${e['url']}  \n ${e['timestamp']} \n ${e['description']}",
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
@@ -185,6 +242,51 @@ class ActionItem {
   ActionItem(this.onpressed, this.iconData);
 }
 
+// class ResizingButtons extends StatefulWidget {
+//   const ResizingButtons({super.key});
+
+//   @override
+//   State<ResizingButtons> createState() => _ResizingButtonsState();
+// }
+
+// class _ResizingButtonsState extends State<ResizingButtons> {
+//   List<ActionItem> get widgets {
+//     return [
+//       ActionItem(
+//         Provider.of<MarkerkayerViewModel>(context).playMarkersIncrementally,
+//         Icons.play_arrow_rounded,
+//       ),
+//       ActionItem(
+//         context.read<FieldViewModel>().invertfieldvisibility,
+//         Icons.visibility,
+//       ),
+//       ActionItem(context.read<MapViewModel>().inZoom, Icons.plus_one),
+//       ActionItem(context.read<MapViewModel>().deZoom, Icons.exposure_minus_1),
+//     ];
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Positioned(
+//       bottom: 5,
+//       right: 5,
+//       child: Card(
+//         color: Theme.of(context).cardColor,
+//         shape: Theme.of(context).cardTheme.shape,
+//         child: Column(
+//           children:
+//               widgets.map((e) {
+//                 return IconButton(
+//                   onPressed: e.onpressed,
+//                   icon: Icon(e.iconData),
+//                 );
+//               }).toList(),
+//         ),
+//       ),
+//     );
+//   }
+// }
+
 class ResizingButtons extends StatefulWidget {
   const ResizingButtons({super.key});
 
@@ -210,22 +312,12 @@ class _ResizingButtonsState extends State<ResizingButtons> {
 
   @override
   Widget build(BuildContext context) {
-    return Positioned(
-      bottom: 5,
-      right: 5,
-      child: Card(
-        color: Theme.of(context).cardColor,
-        shape: Theme.of(context).cardTheme.shape,
-        child: Column(
-          children:
-              widgets.map((e) {
-                return IconButton(
-                  onPressed: e.onpressed,
-                  icon: Icon(e.iconData),
-                );
-              }).toList(),
-        ),
-      ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children:
+          widgets.map((e) {
+            return IconButton(onPressed: e.onpressed, icon: Icon(e.iconData));
+          }).toList(),
     );
   }
 }
