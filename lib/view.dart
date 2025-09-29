@@ -21,6 +21,10 @@ class _WholeMapState extends State<WholeMap> {
       onPointerDown: (event, point) {
         context.read<FieldViewModel>().lat = point.latitude;
         context.read<FieldViewModel>().lng = point.longitude;
+
+        // for the temporary marker
+        lat = point.latitude;
+        lng = point.longitude;
         context.read<FieldViewModel>().notify();
       },
       minZoom: 2,
@@ -33,6 +37,9 @@ class _WholeMapState extends State<WholeMap> {
     );
   }
 
+  double lat = 0;
+  double lng = 0;
+
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -42,7 +49,25 @@ class _WholeMapState extends State<WholeMap> {
           child: FlutterMap(
             mapController: Provider.of<MapViewModel>(context).con,
             options: mapoptions(),
-            children: [MapLayer(), MarkerKayer()],
+            children: [
+              MapLayer(),
+              MarkerKayer(),
+              MarkerLayer(
+                markers: [
+                  Marker(
+                    child: Icon(
+                      size: 12,
+                      Icons.circle,
+                      color:
+                          context.watch<FieldViewModel>().side == "saf"
+                              ? Colors.green
+                              : Colors.yellow,
+                    ),
+                    point: LatLng(lat, lng),
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
         Expanded(
