@@ -21,7 +21,6 @@ class _WholeMapState extends State<WholeMap> {
       onPointerDown: (event, point) {
         context.read<FieldViewModel>().lat = point.latitude;
         context.read<FieldViewModel>().lng = point.longitude;
-
         // for the temporary marker
         lat = point.latitude;
         lng = point.longitude;
@@ -52,6 +51,7 @@ class _WholeMapState extends State<WholeMap> {
             children: [
               MapLayer(),
               MarkerKayer(),
+              // temporary marker
               MarkerLayer(
                 markers: [
                   Marker(
@@ -90,22 +90,6 @@ class _WholeMapState extends State<WholeMap> {
         ),
       ],
     );
-
-    // original implementation
-    // return Stack(
-    //   children: [
-    //     FlutterMap(
-    //       mapController: Provider.of<MapViewModel>(context).con,
-    //       options: mapoptions(),
-    //       children: [MapLayer(), MarkerKayer()],
-    //     ),
-    //     ResizingButtons(),
-    //     Visibility(
-    //       visible: context.watch<FieldViewModel>().fieldVisiblity,
-    //       child: FlowView(),
-    //     ),
-    //   ],
-    // );
   }
 }
 
@@ -163,8 +147,6 @@ class MarkerkayerViewModel extends ChangeNotifier {
     int n = 0;
     _allMarkers =
         snapshot.docs.map((e) {
-          // stack
-          // make it onto it's own class to keep things clean
           return Marker(
             point: LatLng(e['location']['lat'], e['location']['lng']),
             height: 12,
@@ -266,51 +248,6 @@ class ActionItem {
 
   ActionItem(this.onpressed, this.iconData);
 }
-
-// class ResizingButtons extends StatefulWidget {
-//   const ResizingButtons({super.key});
-
-//   @override
-//   State<ResizingButtons> createState() => _ResizingButtonsState();
-// }
-
-// class _ResizingButtonsState extends State<ResizingButtons> {
-//   List<ActionItem> get widgets {
-//     return [
-//       ActionItem(
-//         Provider.of<MarkerkayerViewModel>(context).playMarkersIncrementally,
-//         Icons.play_arrow_rounded,
-//       ),
-//       ActionItem(
-//         context.read<FieldViewModel>().invertfieldvisibility,
-//         Icons.visibility,
-//       ),
-//       ActionItem(context.read<MapViewModel>().inZoom, Icons.plus_one),
-//       ActionItem(context.read<MapViewModel>().deZoom, Icons.exposure_minus_1),
-//     ];
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Positioned(
-//       bottom: 5,
-//       right: 5,
-//       child: Card(
-//         color: Theme.of(context).cardColor,
-//         shape: Theme.of(context).cardTheme.shape,
-//         child: Column(
-//           children:
-//               widgets.map((e) {
-//                 return IconButton(
-//                   onPressed: e.onpressed,
-//                   icon: Icon(e.iconData),
-//                 );
-//               }).toList(),
-//         ),
-//       ),
-//     );
-//   }
-// }
 
 class ResizingButtons extends StatefulWidget {
   const ResizingButtons({super.key});
