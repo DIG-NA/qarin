@@ -6,11 +6,7 @@ void writeData(Map<String, dynamic> data) async {
   db
       // .collection('places')
       .collection('places-demo')
-      .add(data)
-      .then(
-        (DocumentReference doc) =>
-            print('DocumentSnapshot added with ID: ${doc.id}'),
-      );
+      .add(data);
 
   readData();
 }
