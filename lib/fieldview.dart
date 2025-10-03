@@ -322,7 +322,7 @@ class FieldViewModel extends ChangeNotifier {
   String url = '';
   String description = '';
 
-  bool fieldVisiblity = true;
+  bool fieldVisiblity = false;
 
   notify() {
     notifyListeners();
