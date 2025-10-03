@@ -52,21 +52,24 @@ class _WholeMapState extends State<WholeMap> {
               MapLayer(),
               MarkerKayer(),
               // temporary marker
-              MarkerLayer(
-                markers: [
-                  Marker(
-                    child: Icon(
-                      size: 12,
-                      Icons.circle,
-                      color:
-                          context.watch<FieldViewModel>().side == "saf"
-                              ? Colors.green
-                              : Colors.yellow,
+              if (context.watch<FieldViewModel>().fieldVisiblity)
+                MarkerLayer(
+                  markers: [
+                    Marker(
+                      child: Icon(
+                        size: 12,
+                        Icons.circle,
+                        color:
+                            context.watch<FieldViewModel>().side == "saf"
+                                ? Colors.green
+                                : Colors.yellow,
+                      ),
+                      point: LatLng(lat, lng),
                     ),
-                    point: LatLng(lat, lng),
-                  ),
-                ],
-              ),
+                  ],
+                )
+              else
+                SizedBox.shrink(),
             ],
           ),
         ),
