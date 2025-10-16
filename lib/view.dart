@@ -281,7 +281,9 @@ class _ResizingButtonsState extends State<ResizingButtons> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children:
           widgets.map((e) {
-            return IconButton(onPressed: e.onpressed, icon: Icon(e.iconData));
+            return Expanded(
+              child: IconButton(onPressed: e.onpressed, icon: Icon(e.iconData)),
+            );
           }).toList(),
     );
   }
